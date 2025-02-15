@@ -1,0 +1,47 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import type { GetStaticPaths } from "astro";
+import type { Character } from "../../interfaces/character.response";
+import type { CharacterListResponse } from "../../interfaces/characters-list.response";
+
+export const getStaticPaths = (async () => {
+
+  const resp = await fetch('https://dragonball-api.com/api/characters?limit=58')
+  const {items:data} = (await resp.json()) as CharacterListResponse
+
+
+  return data.map(({id, name, image}) => ({
+      params: { 
+        slug: name.toLowerCase().replace(/[. ]/g, "")
+      },
+      props: {
+        id,
+        name,
+        image,
+      }
+    }))
+}) satisfies GetStaticPaths;
+
+// const { slug } = Astro.params
+const { id, name, image } = Astro.props
+
+const resp = await fetch(`https://dragonball-api.com/api/characters/${id}`)
+const { transformations } = await resp.json() as Character
+
+---
+<Layout title="Dragon Ball | Nombre">
+  <a href="/">Volver</a>
+  <img src={image} class="h-100" alt="">
+  <h1>{id} { name }</h1>
+
+  {
+    transformations.length > 0 ? (
+      transformations.map(({ name, image }) => (
+        <div>
+          <img src={image} class="h-60" />
+          <p>{name}</p>
+        </div>
+      ))
+    ) : null
+  }
+</Layout>

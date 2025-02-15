@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-blue-junior: rgba(6, 93, 122, 1);
+}
