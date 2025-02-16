@@ -12,7 +12,7 @@ export const getStaticPaths = (async () => {
 
   return data.map(({id, name, image}) => ({
       params: { 
-        slug: name.toLowerCase().replace(/[. ]/g, "")
+        slug: name.toLowerCase().replace(/[. ()]/g, "")
       },
       props: {
         id,
@@ -29,7 +29,7 @@ const resp = await fetch(`https://dragonball-api.com/api/characters/${id}`)
 const { transformations } = await resp.json() as Character
 
 ---
-<Layout title="Dragon Ball | Nombre">
+<Layout title={`Dragon Ball | ${name}`}>
   <a href="/">Volver</a>
   <img src={image} class="h-100" alt="">
   <h1>{id} { name }</h1>
