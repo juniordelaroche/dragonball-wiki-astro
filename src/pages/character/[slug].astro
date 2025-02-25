@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "@layouts/Layout.astro";
 import type { GetStaticPaths } from "astro";
-import type { Character } from "../../interfaces/character.response";
-import type { CharacterListResponse } from "../../interfaces/characters-list.response";
+import type { Character } from "@interfaces/character.response";
+import type { CharacterListResponse } from "@interfaces/characters-list.response";
 
 export const getStaticPaths = (async () => {
 
@@ -26,22 +26,26 @@ export const getStaticPaths = (async () => {
 const { id, name, image } = Astro.props
 
 const resp = await fetch(`https://dragonball-api.com/api/characters/${id}`)
-const { transformations } = await resp.json() as Character
+const { description, ki, maxKi } = await resp.json() as Character
 
 ---
-<Layout title={`Dragon Ball | ${name}`}>
-  <a href="/">Volver</a>
-  <img src={image} class="h-100" alt="">
-  <h1>{id} { name }</h1>
+<Layout title={`Dragon Ball | ${name}`} image={image} description={description}>
+  <div>
+    <header class="p-4">
+      <a href="/">Volver</a>
+    </header>
+    <section class="flex gap-5">
+      <img class="h-100 shrink-0" transition:name={`personaje-${name}`}  src={image} alt={name} />
+      <article>
+        <h1 class="text-5xl font-bold underline mb-5">{ name }</h1>
+        <p class="">Ki: <span class="text-blue-400 font-bold">{ki}</span></p>
+        <p class="mb-2">Ki Maximo: <span class="text-blue-400 font-bold">{maxKi}</span></p>
+        <!-- <div class="flex items-center gap-5">
+        </div> -->
+        <p class="max-w-[65ch] text-balance">{description}</p>
+      </article>
+    </section>
+  </div>
 
-  {
-    transformations.length > 0 ? (
-      transformations.map(({ name, image }) => (
-        <div>
-          <img src={image} class="h-60" />
-          <p>{name}</p>
-        </div>
-      ))
-    ) : null
-  }
+  
 </Layout>
